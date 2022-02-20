@@ -1,0 +1,135 @@
+<html>
+<head>
+<title>Form1.cs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #569cd6;}
+.s1 { color: #dcdcdc;}
+.s2 { color: #57a64a;}
+.s3 { color: #d69d85;}
+.s4 { color: #b5cea8;}
+</style>
+</head>
+<body bgcolor="#1e1e1e">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Form1.cs</font>
+</center></td></tr></table>
+<pre><span class="s0">using </span><span class="s1">System;</span>
+<span class="s0">using </span><span class="s1">System.Collections.Generic;</span>
+<span class="s0">using </span><span class="s1">System.ComponentModel;</span>
+<span class="s0">using </span><span class="s1">System.Data;</span>
+<span class="s0">using </span><span class="s1">System.Drawing;</span>
+<span class="s0">using </span><span class="s1">System.IO;</span>
+<span class="s0">using </span><span class="s1">System.Linq;</span>
+<span class="s0">using </span><span class="s1">System.Text;</span>
+<span class="s0">using </span><span class="s1">System.Threading.Tasks;</span>
+<span class="s0">using </span><span class="s1">System.Windows.Forms;</span>
+
+<span class="s0">namespace </span><span class="s1">Bunny_Sorter</span>
+<span class="s1">{</span>
+    <span class="s0">public </span><span class="s1">partial </span><span class="s0">class </span><span class="s1">Form1 : Form</span>
+    <span class="s1">{</span>
+        <span class="s0">private string </span><span class="s1">_rootPath;</span>
+
+        <span class="s0">public </span><span class="s1">Form1()</span>
+        <span class="s1">{</span>
+            <span class="s1">InitializeComponent();</span>
+        <span class="s1">}</span>
+        
+        <span class="s0">private void </span><span class="s1">button1_Click(</span><span class="s0">object </span><span class="s1">sender, EventArgs e)</span>
+        <span class="s1">{</span>
+            <span class="s1">OpenFileDialog folderBrowser = </span><span class="s0">new </span><span class="s1">OpenFileDialog();</span>
+        <span class="s2">// Set validate names and check file exists to false otherwise windows will</span>
+        <span class="s2">// not let you select &quot;Folder Selection.&quot;</span>
+            <span class="s1">folderBrowser.ValidateNames = </span><span class="s0">false</span><span class="s1">;</span>
+            <span class="s1">folderBrowser.CheckFileExists = </span><span class="s0">false</span><span class="s1">;</span>
+            <span class="s1">folderBrowser.CheckPathExists = </span><span class="s0">true</span><span class="s1">;</span>
+        <span class="s2">// Always default to Folder Selection.</span>
+            <span class="s1">folderBrowser.FileName = </span><span class="s3">&quot;Folder Selection.&quot;</span><span class="s1">;</span>
+
+            <span class="s0">if </span><span class="s1">(folderBrowser.ShowDialog() != DialogResult.OK)</span>
+                <span class="s0">return</span><span class="s1">;</span>
+            
+            <span class="s1">_rootPath = Path.GetDirectoryName(folderBrowser.FileName);</span>
+            <span class="s1">textBox1.Text = _rootPath;</span>
+        <span class="s1">}</span>
+
+        <span class="s0">private void </span><span class="s1">textBox1_Leave(</span><span class="s0">object </span><span class="s1">sender, EventArgs e)</span>
+        <span class="s1">{</span>
+            <span class="s1">_rootPath = textBox1.Text;</span>
+        <span class="s1">}</span>
+
+        <span class="s0">private void </span><span class="s1">textBox1_TextChanged(</span><span class="s0">object </span><span class="s1">sender, EventArgs e)</span>
+        <span class="s1">{</span>
+            <span class="s1">_rootPath = textBox1.Text;</span>
+        <span class="s1">}</span>
+
+        <span class="s0">private void </span><span class="s1">button2_Click(</span><span class="s0">object </span><span class="s1">sender, EventArgs e)</span>
+        <span class="s1">{</span>
+            <span class="s1">label2.Text = </span><span class="s0">string</span><span class="s1">.Empty;</span>
+            <span class="s1">_rootPath   = textBox1.Text;</span>
+            
+            <span class="s0">if</span><span class="s1">(_rootPath == </span><span class="s0">string</span><span class="s1">.Empty)</span>
+                <span class="s0">return</span><span class="s1">;</span>
+
+            <span class="s1">var dirsPath = Directory.GetDirectories(_rootPath, </span><span class="s3">&quot;P*&quot;</span><span class="s1">);</span>
+            
+            <span class="s0">if </span><span class="s1">(dirsPath.Length &lt; </span><span class="s4">1</span><span class="s1">)</span>
+            <span class="s1">{</span>
+                <span class="s1">MessageBox.Show(</span><span class="s3">@&quot;There is no plan directory in this path!&quot;</span><span class="s1">, </span><span class="s3">@&quot;Incorrect Address&quot;</span><span class="s1">, MessageBoxButtons.OK, MessageBoxIcon.Error);</span>
+                <span class="s0">return</span><span class="s1">;</span>
+            <span class="s1">}</span>
+            
+            <span class="s0">string </span><span class="s1">errorsDescription = </span><span class="s0">string</span><span class="s1">.Empty;</span>
+            
+            <span class="s0">foreach </span><span class="s1">(var dir </span><span class="s0">in </span><span class="s1">dirsPath)</span>
+            <span class="s1">{</span>
+                <span class="s0">string</span><span class="s1">[] allFilesPaths = Directory.GetFiles(dir, </span><span class="s3">$&quot;{</span><span class="s1">dir.Split(</span><span class="s3">'\\'</span><span class="s1">).Last()</span><span class="s3">}.*&quot;</span><span class="s1">);</span>
+                
+                <span class="s0">if </span><span class="s1">(allFilesPaths.Length &lt; </span><span class="s4">1</span><span class="s1">)</span>
+                <span class="s1">{</span>
+                    <span class="s1">errorsDescription += </span><span class="s3">$&quot;{</span><span class="s1">dir</span><span class="s3">} (Empty!)\n&quot;</span><span class="s1">;</span>
+                <span class="s1">}</span>
+                <span class="s0">else</span>
+                <span class="s1">{</span>
+                    <span class="s1">label2.Text += </span><span class="s3">$&quot;{</span><span class="s1">dir.Split(</span><span class="s3">'\\'</span><span class="s1">).Last()</span><span class="s3">}\n&quot;</span><span class="s1">;</span>
+                    
+                    <span class="s0">foreach </span><span class="s1">(var filesPath </span><span class="s0">in </span><span class="s1">allFilesPaths)</span>
+                    <span class="s1">{</span>
+                        <span class="s0">string </span><span class="s1">planType = filesPath.Split(</span><span class="s3">'\\'</span><span class="s1">).Last();</span>
+                        <span class="s1">planType        = planType.Split(</span><span class="s3">'.'</span><span class="s1">)[</span><span class="s4">1</span><span class="s1">];</span>
+
+                        <span class="s1">label2.Text     += </span><span class="s3">$&quot;   {</span><span class="s1">planType</span><span class="s3">}\n&quot;</span><span class="s1">;</span>
+                        
+                        <span class="s0">string </span><span class="s1">planTypeDir = </span><span class="s3">$@&quot;{</span><span class="s1">dir</span><span class="s3">}\{</span><span class="s1">planType</span><span class="s3">}&quot;</span><span class="s1">;</span>
+                        
+                        <span class="s0">if </span><span class="s1">(!Directory.Exists(planTypeDir))</span>
+                        <span class="s1">{</span>
+                            <span class="s1">Directory.CreateDirectory(planTypeDir);</span>
+                        <span class="s1">}</span>
+
+                        <span class="s0">if </span><span class="s1">(filesPath.Split(</span><span class="s3">'\\'</span><span class="s1">).Last().Split(</span><span class="s3">'.'</span><span class="s1">)[</span><span class="s4">2</span><span class="s1">] != </span><span class="s3">&quot;0000&quot;</span><span class="s1">)</span>
+                        <span class="s1">{</span>
+                            <span class="s1">planTypeDir = </span><span class="s3">$&quot;{</span><span class="s1">planTypeDir</span><span class="s3">}\\{</span><span class="s1">filesPath.Split(</span><span class="s3">'\\'</span><span class="s1">).Last()</span><span class="s3">}&quot;</span><span class="s1">;</span>
+
+                            <span class="s1">System.IO.File.Move(filesPath, planTypeDir);</span>
+                        <span class="s1">}</span>
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+
+            <span class="s0">if </span><span class="s1">(errorsDescription != </span><span class="s0">string</span><span class="s1">.Empty)</span>
+            <span class="s1">{</span>
+                <span class="s1">errorsDescription = errorsDescription.Insert(</span><span class="s4">0</span><span class="s1">, </span><span class="s3">&quot;There is no plan file in this path! \n&quot;</span><span class="s1">);</span>
+                <span class="s1">MessageBox.Show(errorsDescription, </span><span class="s3">@&quot;Incorrect Address&quot;</span><span class="s1">, MessageBoxButtons.OK, MessageBoxIcon.Error);</span>
+            <span class="s1">}</span>
+
+            
+
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>
