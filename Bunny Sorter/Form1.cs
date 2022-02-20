@@ -82,8 +82,8 @@ namespace Bunny_Sorter
                     {
                         string planType = filesPath.Split('\\').Last();
                         string[] planTypeSplit = planType.Split('.');
-
-                        if (planTypeSplit.Length < 3)
+                        
+                        if (planTypeSplit.Length < 4)
                         {
                             errorsDescription += $"{dir} (No Types!)\n";
                             break;
