@@ -130,9 +130,6 @@ namespace Bunny_Sorter
                 errorsDescription = errorsDescription.Insert(0, "There is no plan file in this path! \n");
                 MessageBox.Show(errorsDescription, @"Incorrect Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            
-
         }
         
     }
